@@ -1,0 +1,222 @@
+Advanced Resources Importer
+===========================
+
+A reimplementation of the Liferay Resources Importer with additional functionality and improved flexibility.
+
+Usage
+-----
+
+At first you need to deploy the `advanced-resources-importer-service-7-x.jar`.
+
+Depending on your Liferay version you need to deploy one additional module:
+
+* Liferay 7.0.x: `advanced-resources-importer-components-70.jar`
+* Liferay 7.1.x: `advanced-resources-importer-components-71.jar`
+* Liferay 7.2.x: `advanced-resources-importer-components-72.jar`
+* Liferay 7.3.x: `advanced-resources-importer-components-73.jar`
+
+To import resources you have to create a new module. This can be a JAR module and does not need to be a WAR module as in the "old" resources importer.
+
+When using a JAR module you need to define a servlet context. This is possible by setting a `Web-ContextPath`
+inside the `bnd.bnd` file.
+
+To be detected by the Advanced Resources Importer the settings `Advanced-Resources-Importer` and `Advanced-Resources-Importer-Group` have to be added to the `bnd.bnd` file.
+
+The setting `Advanced-Resources-Importer-Group` defines into which site the resources should be imported.
+You can use `Global` for the global scope, `Guest` for the default Liferay site or the name
+of any other site. If the site does not exist, the site will be created automatically.
+
+An example `bnd.bnd` may look like this: 
+
+``` 
+Advanced-Resources-Importer: true
+Advanced-Resources-Importer-Group: Foobar
+Web-ContextPath: /my-resources
+```
+
+Features
+--------
+
+The following features have been implemented so far:
+
+### Creating Sites
+
+When you provide a `Advanced-Resources-Importer-Group` that does not exist yet the site will be automatically created.
+
+### Importing Web Content Structures and Templates
+
+Web content structures and templates have to be present in the same directory structure as in the "old" resources importer.
+
+The following changes were made compared to the "old" Resources Importer:
+
+* You can rename the structures in Liferay. The names are kept as they are and are not changed when importing the resources again
+* Web Content Templates are created as not cacheable.
+
+### Importing Application Display Templates
+
+Application Display Templates have to be present in the same directory structure as in the "old" resources importer.
+
+The following changes were made compared to the "old" Resources Importer:
+
+* You can rename the ADTs in Liferay. The names are kept as they are and are not changed when importing the resources again
+
+### Importing Document types
+
+Importing Document types was not possible in the "old" resources importer.
+
+To import Document types put them into the folder `/templates-importer/document_library/document_types` as JSON files.
+
+### Importing vocabularies and categories
+
+Importing vocabularies and categories was not possible in the "old" resources importer.
+
+To import vocabularies and categories, create a file `/templates-importer/vocabularies.json`.
+
+You can define which asset types can be used for a vocabulary (selectedClassNames) and which are required fields (requiredClassNames).
+
+For a vocabulary you can define the categories and subcategories, including additional property values.
+
+A sample file may look like this:
+
+```json
+{
+  "vocabularies": [
+    {
+      "name": "Event type",
+      "multiValued": true,
+      "selectedClassNames": [
+        "com.liferay.journal.model.JournalArticle:Example Structure"
+      ],
+      "categories": [
+        {
+          "name": "Exhibition"
+        },
+        {
+          "name": "Fair",
+          "categories": [
+            {
+              "name": "Special fair"
+            }
+          ]
+        },
+        {
+          "name": "Other",
+          "properties": [
+            { "foo":  "bar"}
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Documents and Media
+
+To import Documents and Media they must be present in the same directory structure as in the "old" resources importer.
+
+Additionally you can define a document type and metadata in the `assets.json` file.
+
+A sample `assets.json` may look like this:
+
+```json
+{
+  "assets": [
+    {
+      "name": "my-special-image.jpg",
+      "fileEntryType": "Image with copyright",
+      "fileEntryMetadata": {
+        "Copyright": "Copyright by Foo"
+      }
+    }
+  ]
+}
+```
+
+### Importing Web Contents
+
+To import Web Contents they must be present in the same directory structure as in the "old" resources importer.
+
+Compared to the "old" Resources Importer the following changes have been made:
+
+* Web Content Templates are being searched through the whole site hierarchy. By this you can use "Basic Webcontent", finally.
+* You can refer to files in the Web Contents. Compared to the "old" Resources Importer you can provide a whole path to the files, so that you can select files in subfolder, too.
+
+A sample file may look like this:
+
+```xml
+<?xml version="1.0"?>
+
+<root available-locales="en_US" default-locale="en_US">
+    <dynamic-element name="content" type="text_area" index-type="text" index="0">
+        <dynamic-content language-id="en_US">
+            <![CDATA[
+			    <center>
+			    <p><img alt="" src="[$FILE=footer/footer1.png$]" /></p>
+			    </center>
+		    ]]>
+        </dynamic-content>
+    </dynamic-element>
+</root> 
+```
+
+### Layouts
+
+Layouts can be imported as in the "old" resources importer using the `sitemap.json`.
+
+### Tags and Categories
+
+As in the "old" resources importer you can add tags to your content using thee `assets.json`.
+
+Additionally can add categories to your content, too. 
+
+An example `assets.json` may look like this
+
+```json
+{
+  "assets": [
+    {
+      "name": "My Example Content.xml",
+      "tags": [
+        "logo",
+        "company"
+      ],
+      "categories": [
+        {
+          "Event type": ["Exhibition", "Fair\\Special fair"]
+        }
+      ]
+    }
+  ]
+}
+```
+
+Not implemented features
+------------------------
+
+The following features have not been implemented
+
+* Creating site templates
+* Creating Web Content Structures which inherit from a parent structure.
+* Creating dynamic data lists
+
+Liferay versions
+----------------
+
+This plugn has been tested against the following Liferay versions:
+
+* Liferay CE 7.0.3 GA4
+* Liferay CE 7.0.6 GA7
+* Liferay CE 7.1.3 GA4
+* Liferay CE 7.2.1 GA2
+* Liferay CE 7.3.0 GA1 (in progress)
+
+Developer notes
+---------------
+
+The implementation is done in a modular way. Developers can add additional functionality.
+
+Every step of the Advanced Resources Importer is done with a component of the type `Importer.class`.
+To add a new step just create a new component of this type. The order of the steps is done with the property `importer.order`.
+
+Support for new Application Display Templates can be done with a component of type `ADT.class`.

@@ -1,0 +1,30 @@
+{
+  "vocabularies": [
+    {
+      "name": "Event type",
+      "multiValued": true,
+      "selectedClassNames": [
+        "com.liferay.journal.model.JournalArticle:Example Structure"
+      ],
+      "categories": [
+        {
+          "name": "Exhibition"
+        },
+        {
+          "name": "Fair",
+          "categories": [
+            {
+              "name": "Special fair"
+            }
+          ]
+        },
+        {
+          "name": "Other",
+          "properties": [
+            { "foo":  "bar"}
+          ]
+        }
+      ]
+    }
+  ]
+}

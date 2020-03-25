@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.dm.toolbox.liferay</groupId>
+    <artifactId>advanced-resources-importer</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Advanced Resources Importer</name>
+    <organization>
+        <name>Dominik Marks</name>
+        <url>https://github.com/dmarks2</url>
+    </organization>
+
+    <modules>
+        <module>advanced-resources-importer-service-7-x</module>
+        <module>advanced-resources-importer-components-70</module>
+        <module>advanced-resources-importer-components-71</module>
+        <module>advanced-resources-importer-components-72</module>
+        <module>advanced-resources-importer-components-73</module>
+        <module>advanced-resources-importer-example-7-x</module>
+    </modules>
+
+    <properties>
+        <com.liferay.ant.bnd.version>2.0.19</com.liferay.ant.bnd.version>
+        <biz.aQute.bndlib.version>3.2.0</biz.aQute.bndlib.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>biz.aQute.bnd</groupId>
+                <artifactId>biz.aQute.bndlib</artifactId>
+                <version>${biz.aQute.bndlib.version}</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>liferay-public-releases</id>
+            <url>https://repository.liferay.com/nexus/content/repositories/liferay-public-releases</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <instructions>
+                            <_include>bnd.bnd</_include>
+                        </instructions>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>biz.aQute.bnd</groupId>
+                            <artifactId>biz.aQute.bndlib</artifactId>
+                            <version>${biz.aQute.bndlib.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.liferay</groupId>
+                            <artifactId>com.liferay.ant.bnd</artifactId>
+                            <version>${com.liferay.ant.bnd.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>tidy-maven-plugin</artifactId>
+                    <version>1.1.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>tidy-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

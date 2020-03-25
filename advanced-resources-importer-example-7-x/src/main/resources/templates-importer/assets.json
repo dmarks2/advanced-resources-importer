@@ -1,0 +1,25 @@
+{
+  "assets": [
+    {
+      "name": "My Example Content.xml",
+      "tags": [
+        "logo",
+        "company"
+      ],
+      "categories": [
+        {
+          "Event type": ["Exhibition", "Fair\\Special fair"]
+        }
+      ],
+      "abstractSummary": "This is the summary of my article",
+      "smallImage": "footer/footer1.png"
+    },
+    {
+      "name": "hello.png",
+      "fileEntryType": "Image with Copyright",
+      "fileEntryMetadata": {
+        "copyright": "Copyright by Foo"
+      }
+    }
+  ]
+}
