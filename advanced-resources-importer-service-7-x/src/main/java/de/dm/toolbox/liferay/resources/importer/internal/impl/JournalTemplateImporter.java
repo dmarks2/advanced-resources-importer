@@ -141,6 +141,8 @@ public class JournalTemplateImporter extends BaseImporter {
             if (log.isWarnEnabled()) {
                 log.warn("Structure " + ddmStructureKey + " not found. Skipping template " + fileName);
             }
+
+            return;
         }
 
         DDMTemplate ddmTemplate = ddmTemplateLocalService.fetchTemplate(
