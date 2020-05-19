@@ -11,10 +11,10 @@ Import-Package: \
     com.liferay.osgi.service.tracker.collections.map;version="[1.0,3)",\
     com.liferay.portal.kernel.exception; version="[7.1.0,10)",\
     com.liferay.portal.kernel.json; version="[7.0,9)",\
-    com.liferay.portal.kernel.model;version="[1.0,5)",\
+    com.liferay.portal.kernel.model;version="[1.0,6)",\
     com.liferay.portal.kernel.portlet;version="[7.10.0,11)",\
     com.liferay.portal.kernel.repository.model;version="[7.2.0,9)",\
-    com.liferay.portal.kernel.service; version="[1.18,4)",\
+    com.liferay.portal.kernel.service; version="[1.18,5)",\
     com.liferay.portal.kernel.util;version="[7.23.0,11)",\
     com.liferay.portal.kernel.security.auth; version="[1.1,3)",\
     com.liferay.portal.kernel.theme; version="[1.4,4)",\
@@ -32,3 +32,6 @@ Import-Package: \
     com.liferay.exportimport.kernel.lar; version="[1.2,4)",\
     com.liferay.portlet.display.template; version="[1.0,3)",\
     *
+
+Require-Capability: \
+    de.dm.toolbox.liferay.advanced.resources.importer.component
