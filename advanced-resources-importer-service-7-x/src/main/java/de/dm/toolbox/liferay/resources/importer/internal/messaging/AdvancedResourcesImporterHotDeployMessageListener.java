@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import de.dm.toolbox.liferay.resources.importer.components.DDMFormDeserializer;
 import de.dm.toolbox.liferay.resources.importer.internal.util.ImporterFactory;
 import de.dm.toolbox.liferay.resources.importer.Importer;
 import de.dm.toolbox.liferay.resources.importer.internal.util.AssetsUtil;
@@ -148,5 +149,10 @@ public class AdvancedResourcesImporterHotDeployMessageListener {
     @Deactivate
     protected void deactivate() {
         servletContexts.close();
+    }
+
+    @Reference(unbind = "-")
+    protected void setDDMFormDeserializer(DDMFormDeserializer ddmFormDeserializer) {
+        //do nothing, just to avoid starting this component if no liferay specific component is available
     }
 }

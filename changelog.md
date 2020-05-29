@@ -3,6 +3,10 @@ Advanced Resources Importer
 
 List of changes
 
+Version 1.0.3
+-------------
+* Avoid starting the import when the liferay specific components are not running yet
+
 Version 1.0.2
 -------------
 * Support for importing new ADTs for the search portlets in Liferay 7.3.x
