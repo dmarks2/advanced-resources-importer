@@ -26,12 +26,15 @@ The setting `Advanced-Resources-Importer-Group` defines into which site the reso
 You can use `Global` for the global scope, `Guest` for the default Liferay site or the name
 of any other site. If the site does not exist, the site will be created automatically.
 
+To express that your resources need the advanced resources importer to be deployed, add a `Require-Bundle` instruction.
+
 An example `bnd.bnd` may look like this: 
 
 ``` 
 Advanced-Resources-Importer: true
 Advanced-Resources-Importer-Group: Foobar
 Web-ContextPath: /my-resources
+Require-Bundle: de.dm.toolbox.liferay.advanced-resources-importer-service-7-x
 ```
 
 Features
