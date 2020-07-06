@@ -212,7 +212,8 @@ This plugn has been tested against the following Liferay versions:
 * Liferay CE 7.0.6 GA7
 * Liferay CE 7.1.3 GA4
 * Liferay CE 7.2.1 GA2
-* Liferay CE 7.3.0 GA1 (in progress)
+* Liferay CE 7.3.1 GA2
+* Liferay CE 7.3.2 GA3
 
 Developer notes
 ---------------

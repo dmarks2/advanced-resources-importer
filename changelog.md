@@ -3,6 +3,10 @@ Advanced Resources Importer
 
 List of changes
 
+Version 1.0.4
+-------------
+* Added support for Liferay 7.3.2 GA 3
+
 Version 1.0.3
 -------------
 * Avoid starting the import when the liferay specific components are not running yet

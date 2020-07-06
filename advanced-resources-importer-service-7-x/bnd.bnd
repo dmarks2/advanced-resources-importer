@@ -26,7 +26,7 @@ Import-Package: \
     com.liferay.document.library.kernel.model; version="[1.0,4)",\
     com.liferay.document.library.kernel.service; version="[1.0,4)",\
     com.liferay.document.library.kernel.util; version="[1.2,3)",\
-    com.liferay.dynamic.data.mapping.model; version="[1.1,4)",\
+    com.liferay.dynamic.data.mapping.model; version="[1.1,5)",\
     com.liferay.dynamic.data.mapping.service; version="[1.1,4)",\
     com.liferay.dynamic.data.mapping.util; version="[1.1,3)",\
     com.liferay.exportimport.kernel.lar; version="[1.2,4)",\

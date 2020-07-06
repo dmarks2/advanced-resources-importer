@@ -1,5 +1,6 @@
 Import-Package: \
     com.liferay.portal.kernel.service; version="[3.1,5)",\
+    com.liferay.dynamic.data.mapping.model; version="[3.1,5)",\
     *
 
 Provide-Capability: \
