@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -37,6 +38,7 @@ import de.dm.toolbox.liferay.resources.importer.internal.util.ImporterUtil;
 
 import javax.servlet.ServletContext;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -139,6 +141,37 @@ public abstract class BaseImporter implements Importer {
 
     protected Map<Locale, String> getMap(String value) {
         return getMap(LocaleUtil.getDefault(), value);
+    }
+
+    protected Map<Locale, String> getLocalizedMapFromAssetJSONObjectMap(String filename, String assetJsonObjectMapKey, Map<Locale, String> defaultValue) {
+        if (this.assetJSONObjectMap != null) {
+            if (this.assetJSONObjectMap.containsKey(filename)) {
+                JSONObject assetJSONObject = assetJSONObjectMap.get(filename);
+                if (assetJSONObject.has(assetJsonObjectMapKey)) {
+                    JSONObject localeMapJsonObject = assetJSONObject.getJSONObject(assetJsonObjectMapKey);
+
+                    if (localeMapJsonObject != null) {
+                        Map<Locale, String> map = (Map<Locale, String>) LocalizationUtil.deserialize(localeMapJsonObject);
+
+                        //no supported languages found
+                        if (!map.containsKey(LocaleUtil.getDefault())) {
+                            Iterator<String> keys = localeMapJsonObject.keys();
+                            if (keys.hasNext()) {
+                                String key = keys.next();
+
+                                String value = localeMapJsonObject.getString(key);
+
+                                map.put(LocaleUtil.getDefault(), value);
+                            }
+                        }
+
+                        return map;
+                    }
+                }
+            }
+        }
+
+        return defaultValue;
     }
 
     protected String getKey(String name) {

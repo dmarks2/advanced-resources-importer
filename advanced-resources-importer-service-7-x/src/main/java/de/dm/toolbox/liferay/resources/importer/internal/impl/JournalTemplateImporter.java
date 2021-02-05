@@ -9,6 +9,7 @@ import com.liferay.dynamic.data.mapping.model.DDMTemplateConstants;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -111,11 +112,9 @@ public class JournalTemplateImporter extends BaseImporter {
 
         String language = getDDMTemplateLanguage(fileName);
 
-        fileName = FileUtil.stripExtension(fileName);
+        String name = FileUtil.stripExtension(fileName);
 
-        String name = fileName;
-
-        String key = getKey(fileName);
+        String key = getKey(name);
 
         String script = StringUtil.read(inputStream);
 
@@ -139,7 +138,7 @@ public class JournalTemplateImporter extends BaseImporter {
 
         if (Validator.isNull(ddmStructure)) {
             if (log.isWarnEnabled()) {
-                log.warn("Structure " + ddmStructureKey + " not found. Skipping template " + fileName);
+                log.warn("Structure " + ddmStructureKey + " not found. Skipping template " + name);
             }
 
             return;
@@ -153,10 +152,11 @@ public class JournalTemplateImporter extends BaseImporter {
 
         if (Validator.isNull(ddmTemplate)) {
             if (log.isInfoEnabled()) {
-                log.info("Adding template " + fileName + " for structure " + ddmStructureKey);
+                log.info("Adding template " + name + " for structure " + ddmStructureKey);
             }
 
-            Map<Locale, String> titleMap = getMap(name);
+            Map<Locale, String> titleMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "title", getMap(name));
+            Map<Locale, String> descriptionMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "description", null);
 
             //default cacheable to false
             ddmTemplateLocalService.addTemplate(
@@ -167,7 +167,7 @@ public class JournalTemplateImporter extends BaseImporter {
                     journalArticleClassNameId,
                     key,
                     titleMap,
-                    null,
+                    descriptionMap,
                     DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
                     null,
                     language,
@@ -179,15 +179,18 @@ public class JournalTemplateImporter extends BaseImporter {
                     serviceContext);
         } else {
             if (log.isInfoEnabled()) {
-                log.info("Updating template " + fileName + " for structure " + ddmStructureKey);
+                log.info("Updating template " + name + " for structure " + ddmStructureKey);
             }
+
+            Map<Locale, String> titleMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "title", ddmTemplate.getNameMap());
+            Map<Locale, String> descriptionMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "description", ddmTemplate.getDescriptionMap());
 
             ddmTemplateLocalService.updateTemplate(
                     userId,
                     ddmTemplate.getTemplateId(),
                     ddmStructureClassNameId,
-                    ddmTemplate.getNameMap(),
-                    null,
+                    titleMap,
+                    descriptionMap,
                     DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
                     null,
                     language,

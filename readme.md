@@ -52,8 +52,26 @@ Web content structures and templates have to be present in the same directory st
 
 The following changes were made compared to the "old" Resources Importer:
 
-* You can rename the structures in Liferay. The names are kept as they are and are not changed when importing the resources again
+* You can rename the structures in Liferay. The names are kept as they are and are not changed when importing the resources again (if not overwritten by an entry in `assets.json`, see below)
 * Web Content Templates are created as not cacheable.
+* You can define a custom title and a custom description in the `assets.json` file. If a custom title or a custom description is given this will overwrite the title or description in the portal. This is done like this:
+
+```json
+{
+  "assets": [
+   {
+      "name": "Example Structure.json",
+      "title": {
+        "en_US": "My custom example structure name",
+        "de_DE": "Mein Titel für eine Struktur"
+      },
+      "description": {
+        "en_US": "here comes a description"
+      }
+   }
+  ]
+}
+```
 
 ### Importing Application Display Templates
 
@@ -61,13 +79,50 @@ Application Display Templates have to be present in the same directory structure
 
 The following changes were made compared to the "old" Resources Importer:
 
-* You can rename the ADTs in Liferay. The names are kept as they are and are not changed when importing the resources again
+* You can rename the ADTs in Liferay. The names are kept as they are and are not changed when importing the resources again (if not overwritten by an entry in `assets.json`, see below)
+* You can define a custom title and a custom description in the `assets.json` file. If a custom title or a custom description is given this will overwrite the title or description in the portal. This is done like this:
+
+```json
+{
+  "assets": [
+   {
+      "name": "Example Template.ftl",
+      "title": {
+        "en_US": "My custom example template name",
+        "de_DE": "Mein Titel für ein Template"
+      },
+     "description": {
+        "en_US": "here comes a description"
+      }
+    }
+  ]
+}
+```
 
 ### Importing Document types
 
 Importing Document types was not possible in the "old" resources importer.
 
 To import Document types put them into the folder `/templates-importer/document_library/document_types` as JSON files.
+
+* You can define a custom title and a custom description in the `assets.json` file. If a custom title or a custom description is given this will overwrite the title or description in the portal. This is done like this:
+
+```json
+{
+  "assets": [
+   {
+      "name": "Example Document Type.json",
+      "title": {
+        "en_US": "My custom example document type name",
+        "de_DE": "Mein Titel für einen Dokumententyp"
+      },
+     "description": {
+        "en_US": "here comes a description"
+      }
+    }
+  ]
+}
+```
 
 ### Importing vocabularies and categories
 

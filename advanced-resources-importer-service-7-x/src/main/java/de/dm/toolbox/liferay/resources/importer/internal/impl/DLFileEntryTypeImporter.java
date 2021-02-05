@@ -7,6 +7,7 @@ import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.util.DDM;
 import com.liferay.dynamic.data.mapping.util.DDMBeanTranslator;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -89,9 +90,9 @@ public class DLFileEntryTypeImporter extends BaseImporter {
     private void addDLFileEntryType(String fileName, InputStream inputStream) throws Exception {
         setServiceContext(fileName);
 
-        fileName = FileUtil.stripExtension(fileName);
+        String name = FileUtil.stripExtension(fileName);
 
-        String key = getKey(fileName);
+        String key = getKey(name);
 
         String content = StringUtil.read(inputStream);
 
@@ -109,8 +110,6 @@ public class DLFileEntryTypeImporter extends BaseImporter {
 
         com.liferay.dynamic.data.mapping.kernel.DDMForm ddmForm = ddmBeanTranslator.translate(ddmFormModel);
 
-        Map<Locale, String> titleMap = getMap(fileName);
-
         serviceContext.setAttribute("ddmForm", ddmForm);
 
         if (Validator.isNull(dlFileEntryType)) {
@@ -118,12 +117,15 @@ public class DLFileEntryTypeImporter extends BaseImporter {
                 log.info("Adding DLFileEntryType " + key);
             }
 
+            Map<Locale, String> titleMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "title", getMap(name));
+            Map<Locale, String> descriptionMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "description", null);
+
             dlFileEntryTypeLocalService.addFileEntryType(
                     userId,
                     groupId,
                     key,
                     titleMap,
-                    null,
+                    descriptionMap,
                     new long[0],
                     serviceContext
             );
@@ -133,11 +135,15 @@ public class DLFileEntryTypeImporter extends BaseImporter {
                 log.info("Updating DLFileEntryType " + key);
             }
 
+            Map<Locale, String> titleMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "title", dlFileEntryType.getNameMap());
+            Map<Locale, String> descriptionMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "description", dlFileEntryType.getDescriptionMap());
+
+
             dlFileEntryTypeLocalService.updateFileEntryType(
                     userId,
                     dlFileEntryType.getFileEntryTypeId(),
-                    dlFileEntryType.getNameMap(),
-                    dlFileEntryType.getDescriptionMap(),
+                    titleMap,
+                    descriptionMap,
                     new long[0],
                     serviceContext
             );

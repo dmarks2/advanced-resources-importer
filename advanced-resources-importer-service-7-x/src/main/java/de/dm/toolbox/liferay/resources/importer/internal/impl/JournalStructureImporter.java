@@ -12,6 +12,7 @@ import com.liferay.dynamic.data.mapping.util.DDMXML;
 import com.liferay.journal.configuration.JournalServiceConfigurationValues;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.util.JournalConverter;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -107,11 +108,9 @@ public class JournalStructureImporter extends BaseImporter {
 
         String language = getDDMStructureLanguage(fileName);
 
-        fileName = FileUtil.stripExtension(fileName);
+        String name = FileUtil.stripExtension(fileName);;
 
-        String name = fileName;
-
-        String key = getKey(fileName);
+        String key = getKey(name);
 
         long classNameId = portal.getClassNameId(JournalArticle.class);
 
@@ -148,7 +147,8 @@ public class JournalStructureImporter extends BaseImporter {
         DDMFormLayout ddmFormLayout = ddm.getDefaultDDMFormLayout(ddmForm);
 
         if (Validator.isNull(ddmStructure)) {
-            Map<Locale, String> titleMap = getMap(name);
+            Map<Locale, String> titleMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "title", getMap(name));
+            Map<Locale, String> descriptionMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "description", null);
 
             if (log.isInfoEnabled()) {
                 log.info("Adding DDM Structure " + name);
@@ -161,7 +161,7 @@ public class JournalStructureImporter extends BaseImporter {
                     classNameId,
                     key,
                     titleMap,
-                    null,
+                    descriptionMap,
                     ddmForm,
                     ddmFormLayout,
                     JournalServiceConfigurationValues.JOURNAL_ARTICLE_STORAGE_TYPE,
@@ -187,13 +187,16 @@ public class JournalStructureImporter extends BaseImporter {
                 log.info("Updating DDM Structure " + name);
             }
 
+            Map<Locale, String> titleMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "title", ddmStructure.getNameMap());
+            Map<Locale, String> descriptionMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "description", ddmStructure.getDescriptionMap());
+
             //do not update name!
             ddmStructureLocalService.updateStructure(
                     userId,
                     ddmStructure.getStructureId(),
                     parentDDMStructureId,
-                    ddmStructure.getNameMap(),
-                    ddmStructure.getDescriptionMap(),
+                    titleMap,
+                    descriptionMap,
                     ddmForm,
                     ddmFormLayout,
                     serviceContext

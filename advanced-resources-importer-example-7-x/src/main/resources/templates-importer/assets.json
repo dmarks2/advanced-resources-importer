@@ -20,6 +20,46 @@
       "fileEntryMetadata": {
         "copyright": "Copyright by Foo"
       }
+    },
+    {
+      "name": "Example Structure.json",
+      "title": {
+        "en_US": "My custom example structure name",
+        "de_DE": "Mein Titel für eine Struktur"
+      },
+      "description": {
+        "en_US": "here comes a description"
+      }
+    },
+    {
+      "name": "Example Template.ftl",
+      "title": {
+        "en_US": "My custom example template name",
+        "de_DE": "Mein Titel für ein Template"
+      },
+      "description": {
+        "en_US": "here comes a description"
+      }
+    },
+    {
+      "name": "Image with Copyright.json",
+      "title": {
+        "en_US": "My custom example document type name",
+        "de_DE": "Mein Titel für einen Dokumententypen"
+      },
+      "description": {
+        "en_US": "here comes a description"
+      }
+    },
+    {
+      "name": "Example ADT.ftl",
+      "title": {
+        "en_US": "My custom example ADT name",
+        "de_DE": "Mein Titel für ein ADT"
+      },
+      "description": {
+        "en_US": "here comes a description"
+      }
     }
   ]
 }

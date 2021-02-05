@@ -20,8 +20,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portlet.display.template.PortletDisplayTemplate;
 import com.liferay.registry.collections.ServiceTrackerCollections;
 import com.liferay.registry.collections.ServiceTrackerMap;
-import de.dm.toolbox.liferay.resources.importer.BaseImporter;
 import de.dm.toolbox.liferay.resources.importer.ADT;
+import de.dm.toolbox.liferay.resources.importer.BaseImporter;
 import de.dm.toolbox.liferay.resources.importer.Importer;
 import de.dm.toolbox.liferay.resources.importer.internal.util.ImporterUtil;
 import org.osgi.service.component.annotations.Activate;
@@ -136,13 +136,13 @@ public class ApplicationDisplayTemplateImporter extends BaseImporter {
     }
 
     private void addApplicationDisplayTemplate(String script, File file, long classNameId) throws PortalException {
-        String language = getDDMTemplateLanguage(file.getName());
+        String fileName = file.getName();
 
-        String fileName = FileUtil.stripExtension(file.getName());
+        String language = getDDMTemplateLanguage(fileName);
 
-        String name = fileName;
+        String name = FileUtil.stripExtension(fileName);
 
-        String key = getKey(fileName);
+        String key = getKey(name);
 
         DDMTemplate ddmTemplate = ddmTemplateLocalService.fetchTemplate(groupId, classNameId, key);
 
@@ -150,10 +150,11 @@ public class ApplicationDisplayTemplateImporter extends BaseImporter {
 
         if (Validator.isNull(ddmTemplate)) {
             if (log.isInfoEnabled()) {
-                log.info("Adding Application Display Template " + fileName);
+                log.info("Adding Application Display Template " + name);
             }
 
-            Map<Locale, String> titleMap = getMap(name);
+            Map<Locale, String> titleMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "title", getMap(name));
+            Map<Locale, String> descriptionMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "description", null);
 
             //set cacheable to false by default
             ddmTemplateLocalService.addTemplate(
@@ -164,7 +165,7 @@ public class ApplicationDisplayTemplateImporter extends BaseImporter {
                     portletDisplayTemplateClassNameId,
                     key,
                     titleMap,
-                    null,
+                    descriptionMap,
                     DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
                     StringPool.BLANK,
                     language,
@@ -178,15 +179,18 @@ public class ApplicationDisplayTemplateImporter extends BaseImporter {
 
         } else {
             if (log.isInfoEnabled()) {
-                log.info("Updating Application Display Template " + fileName);
+                log.info("Updating Application Display Template " + name);
             }
+
+            Map<Locale, String> titleMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "title", ddmTemplate.getNameMap());
+            Map<Locale, String> descriptionMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "description", ddmTemplate.getDescriptionMap());
 
             ddmTemplateLocalService.updateTemplate(
                     userId,
                     ddmTemplate.getTemplateId(),
                     ddmTemplate.getClassPK(),
-                    ddmTemplate.getNameMap(),
-                    null,
+                    titleMap,
+                    descriptionMap,
                     DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
                     StringPool.BLANK,
                     language,
