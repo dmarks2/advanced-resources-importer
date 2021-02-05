@@ -446,11 +446,14 @@ public class LayoutImporter extends BaseImporter {
             map = (Map<Locale, String>) LocalizationUtil.deserialize(jsonObject);
 
             if (!map.containsKey(LocaleUtil.getDefault())) {
-                Collection<String> values = map.values();
+                Iterator<String> keys = jsonObject.keys();
+                if (keys.hasNext()) {
+                    String key = keys.next();
 
-                Iterator<String> iterator = values.iterator();
+                    String value = jsonObject.getString(key);
 
-                map.put(LocaleUtil.getDefault(), iterator.next());
+                    map.put(LocaleUtil.getDefault(), value);
+                }
             }
         }
         else {
