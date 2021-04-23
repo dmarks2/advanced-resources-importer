@@ -99,6 +99,23 @@ The following changes were made compared to the "old" Resources Importer:
 }
 ```
 
+For Liferay 7.3 the advanced resources importer is able to import templates for the search portlets, too.
+
+The templates for the search portlets should be present in the following subdirectories inside `/templates-importer/templates/application_display`:
+
+* `category_facet`: Category Facet portlet
+* `custom_facet`: Custom Facet portlet
+* `custom_filter`: Custom Filter portlet
+* `folder_facet`: Folder Facet portlet
+* `modified_facet`: Modified Facet portlet
+* `search_bar`: Search Bar portlet
+* `search_results`: Search Results portlet
+* `site_facet`: Site Facet portlet
+* `sort`: Sort portlet
+* `tag_facet`: Tag Facet portlet
+* `type_facet`: Type Facet portlet
+* `user_facet`: User Facet portlet
+
 ### Importing Document types
 
 Importing Document types was not possible in the "old" resources importer.
