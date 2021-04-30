@@ -17,7 +17,7 @@ public class CategoryFacetADT extends BaseADT {
 
     @Override
     public String getClassName() {
-        return "com.liferay.portal.search.web.internal.facet.display.context.AssetCategoriesSearchFacetDisplayContext";
+        return "com.liferay.portal.search.web.internal.facet.display.context.AssetCategoriesSearchFacetTermDisplayContext";
     }
 
     @Reference
