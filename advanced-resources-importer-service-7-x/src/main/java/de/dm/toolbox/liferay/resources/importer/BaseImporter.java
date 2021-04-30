@@ -148,30 +148,36 @@ public abstract class BaseImporter implements Importer {
             if (this.assetJSONObjectMap.containsKey(filename)) {
                 JSONObject assetJSONObject = assetJSONObjectMap.get(filename);
                 if (assetJSONObject.has(assetJsonObjectMapKey)) {
-                    JSONObject localeMapJsonObject = assetJSONObject.getJSONObject(assetJsonObjectMapKey);
-
-                    if (localeMapJsonObject != null) {
-                        Map<Locale, String> map = (Map<Locale, String>) LocalizationUtil.deserialize(localeMapJsonObject);
-
-                        //no supported languages found
-                        if (!map.containsKey(LocaleUtil.getDefault())) {
-                            Iterator<String> keys = localeMapJsonObject.keys();
-                            if (keys.hasNext()) {
-                                String key = keys.next();
-
-                                String value = localeMapJsonObject.getString(key);
-
-                                map.put(LocaleUtil.getDefault(), value);
-                            }
-                        }
-
-                        return map;
-                    }
+                    Map<Locale, String> map = getLocaleStringMap(assetJsonObjectMapKey, assetJSONObject);
+                    if (map != null) return map;
                 }
             }
         }
 
         return defaultValue;
+    }
+
+    protected Map<Locale, String> getLocaleStringMap(String jsonObjectMapKey, JSONObject jsonObject) {
+        JSONObject localeMapJsonObject = jsonObject.getJSONObject(jsonObjectMapKey);
+
+        if (localeMapJsonObject != null) {
+            Map<Locale, String> map = (Map<Locale, String>) LocalizationUtil.deserialize(localeMapJsonObject);
+
+            //no supported languages found
+            if (!map.containsKey(LocaleUtil.getDefault())) {
+                Iterator<String> keys = localeMapJsonObject.keys();
+                if (keys.hasNext()) {
+                    String key = keys.next();
+
+                    String value = localeMapJsonObject.getString(key);
+
+                    map.put(LocaleUtil.getDefault(), value);
+                }
+            }
+
+            return map;
+        }
+        return null;
     }
 
     protected String getKey(String name) {
