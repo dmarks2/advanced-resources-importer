@@ -3,6 +3,10 @@ Advanced Resources Importer
 
 List of changes
 
+Version 1.0.6
+-------------
+* Bugfix: Importing application display template for category facet
+
 Version 1.0.5
 -------------
 * Feature: Custom titles and descriptions for web content structures, templates, document types and ADTs
