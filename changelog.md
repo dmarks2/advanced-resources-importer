@@ -3,7 +3,7 @@ Advanced Resources Importer
 
 List of changes
 
-Version 1.0.6
+Version 1.0.7
 -------------
 * Bugfix: Importing application display template for category facet
 

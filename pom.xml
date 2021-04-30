@@ -4,7 +4,7 @@
 
     <groupId>de.dm.toolbox.liferay</groupId>
     <artifactId>advanced-resources-importer</artifactId>
-    <version>1.0.7-SNAPSHOT</version>
+    <version>1.0.7</version>
     <packaging>pom</packaging>
 
     <name>Advanced Resources Importer</name>
