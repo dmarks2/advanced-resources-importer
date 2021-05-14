@@ -26,6 +26,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import javax.servlet.ServletContext;
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -101,13 +102,13 @@ public class JournalTemplateImporter extends BaseImporter {
 
                     URLConnection urlConnection = url.openConnection();
 
-                    addDDMTemplate(ddmStructureKey, name, urlConnection.getInputStream());
+                    addDDMTemplate(ddmStructureKey, name, urlConnection.getInputStream(), servletContext);
                 }
             }
         }
     }
 
-    private void addDDMTemplate(String ddmStructureKey, String fileName, InputStream inputStream) throws Exception {
+    private void addDDMTemplate(String ddmStructureKey, String fileName, InputStream inputStream, ServletContext servletContext) throws Exception {
         setServiceContext(fileName);
 
         String language = getDDMTemplateLanguage(fileName);
@@ -150,6 +151,35 @@ public class JournalTemplateImporter extends BaseImporter {
                 key
         );
 
+        JSONObject assetJSONObject = assetJSONObjectMap.get(fileName);
+
+        boolean smallImage = false;
+        File smallImageFile = null;
+
+        if (assetJSONObject != null) {
+            String smallImageFileName = assetJSONObject.getString("smallImage");
+
+            if (Validator.isNotNull(smallImageFileName)) {
+                String resourcesDir = ImporterUtil.getResourcesDir(servletContext);
+
+                InputStream smallImageInputStream = ImporterUtil.getInputStream(servletContext, resourcesDir, smallImageFileName);
+
+                if (smallImageInputStream == null) {
+                    if (log.isWarnEnabled()) {
+                        log.warn("Small Image " + smallImageFileName + " does not exist for template " + name);
+                    }
+                } else {
+                    smallImage = true;
+
+                    String extension = FileUtil.getExtension(smallImageFileName);
+
+                    smallImageFile = FileUtil.createTempFile(extension);
+
+                    FileUtil.write(smallImageFile, smallImageInputStream);
+                }
+            }
+        }
+
         if (Validator.isNull(ddmTemplate)) {
             if (log.isInfoEnabled()) {
                 log.info("Adding template " + name + " for structure " + ddmStructureKey);
@@ -173,9 +203,9 @@ public class JournalTemplateImporter extends BaseImporter {
                     language,
                     replaceFileEntryURL(script, groupId, dlAppLocalService),
                     false,
-                    false,
+                    smallImage,
                     null,
-                    null,
+                    smallImageFile,
                     serviceContext);
         } else {
             if (log.isInfoEnabled()) {
@@ -185,20 +215,38 @@ public class JournalTemplateImporter extends BaseImporter {
             Map<Locale, String> titleMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "title", ddmTemplate.getNameMap());
             Map<Locale, String> descriptionMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "description", ddmTemplate.getDescriptionMap());
 
-            ddmTemplateLocalService.updateTemplate(
-                    userId,
-                    ddmTemplate.getTemplateId(),
-                    ddmStructureClassNameId,
-                    titleMap,
-                    descriptionMap,
-                    DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
-                    null,
-                    language,
-                    replaceFileEntryURL(script, groupId, dlAppLocalService),
-                    ddmTemplate.getCacheable(),
-                    serviceContext
-            );
-
+            if (smallImage) {
+                ddmTemplateLocalService.updateTemplate(
+                        userId,
+                        ddmTemplate.getTemplateId(),
+                        ddmStructureClassNameId,
+                        titleMap,
+                        descriptionMap,
+                        DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
+                        null,
+                        language,
+                        replaceFileEntryURL(script, groupId, dlAppLocalService),
+                        ddmTemplate.getCacheable(),
+                        smallImage,
+                        null,
+                        smallImageFile,
+                        serviceContext
+                );
+            } else {
+                ddmTemplateLocalService.updateTemplate(
+                        userId,
+                        ddmTemplate.getTemplateId(),
+                        ddmStructureClassNameId,
+                        titleMap,
+                        descriptionMap,
+                        DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
+                        null,
+                        language,
+                        replaceFileEntryURL(script, groupId, dlAppLocalService),
+                        ddmTemplate.getCacheable(),
+                        serviceContext
+                );
+            }
         }
     }
 

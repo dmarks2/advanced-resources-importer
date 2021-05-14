@@ -39,7 +39,8 @@
       },
       "description": {
         "en_US": "here comes a description"
-      }
+      },
+      "smallImage": "hello.png"
     },
     {
       "name": "Image with Copyright.json",
@@ -59,7 +60,8 @@
       },
       "description": {
         "en_US": "here comes a description"
-      }
+      },
+      "smallImage": "hello.png"
     }
   ]
 }

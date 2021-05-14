@@ -3,6 +3,10 @@ Advanced Resources Importer
 
 List of changes
 
+Version 1.0.8
+-------------
+* Feature: Support small image for web content templates and application display templates
+
 Version 1.0.7
 -------------
 * Bugfix: Importing application display template for category facet

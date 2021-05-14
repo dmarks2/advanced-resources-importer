@@ -6,6 +6,7 @@ import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.model.DDMTemplateConstants;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassName;
@@ -32,6 +33,7 @@ import org.osgi.service.component.annotations.Reference;
 import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Locale;
@@ -77,7 +79,7 @@ public class ApplicationDisplayTemplateImporter extends BaseImporter {
         addApplicationDisplayTemplates(resourcesDir, APPLICATION_DISPLAY_TEMPLATE_DIR_NAME, servletContext);
     }
 
-    private void addApplicationDisplayTemplates(String resourcesDir, String dirName, ServletContext servletContext) throws IOException, PortalException {
+    private void addApplicationDisplayTemplates(String resourcesDir, String dirName, ServletContext servletContext) throws Exception {
         Set<String> keys = adts.keySet();
 
         String adtPath = ImporterUtil.getResourcePath(resourcesDir, dirName);
@@ -129,13 +131,13 @@ public class ApplicationDisplayTemplateImporter extends BaseImporter {
                         continue;
                     }
 
-                    addApplicationDisplayTemplate(script, file, classNameValue.getClassNameId());
+                    addApplicationDisplayTemplate(script, file, classNameValue.getClassNameId(), servletContext);
                 }
             }
         }
     }
 
-    private void addApplicationDisplayTemplate(String script, File file, long classNameId) throws PortalException {
+    private void addApplicationDisplayTemplate(String script, File file, long classNameId, ServletContext servletContext) throws Exception {
         String fileName = file.getName();
 
         String language = getDDMTemplateLanguage(fileName);
@@ -147,6 +149,35 @@ public class ApplicationDisplayTemplateImporter extends BaseImporter {
         DDMTemplate ddmTemplate = ddmTemplateLocalService.fetchTemplate(groupId, classNameId, key);
 
         long portletDisplayTemplateClassNameId = portal.getClassNameId(PortletDisplayTemplate.class);
+
+        JSONObject assetJSONObject = assetJSONObjectMap.get(fileName);
+
+        boolean smallImage = false;
+        File smallImageFile = null;
+
+        if (assetJSONObject != null) {
+            String smallImageFileName = assetJSONObject.getString("smallImage");
+
+            if (Validator.isNotNull(smallImageFileName)) {
+                String resourcesDir = ImporterUtil.getResourcesDir(servletContext);
+
+                InputStream smallImageInputStream = ImporterUtil.getInputStream(servletContext, resourcesDir, smallImageFileName);
+
+                if (smallImageInputStream == null) {
+                    if (log.isWarnEnabled()) {
+                        log.warn("Small Image " + smallImageFileName + " does not exist for template " + name);
+                    }
+                } else {
+                    smallImage = true;
+
+                    String extension = FileUtil.getExtension(smallImageFileName);
+
+                    smallImageFile = FileUtil.createTempFile(extension);
+
+                    FileUtil.write(smallImageFile, smallImageInputStream);
+                }
+            }
+        }
 
         if (Validator.isNull(ddmTemplate)) {
             if (log.isInfoEnabled()) {
@@ -171,9 +202,9 @@ public class ApplicationDisplayTemplateImporter extends BaseImporter {
                     language,
                     script,
                     false,
-                    false,
+                    smallImage,
                     StringPool.BLANK,
-                    null,
+                    smallImageFile,
                     serviceContext
             );
 
@@ -185,19 +216,38 @@ public class ApplicationDisplayTemplateImporter extends BaseImporter {
             Map<Locale, String> titleMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "title", ddmTemplate.getNameMap());
             Map<Locale, String> descriptionMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "description", ddmTemplate.getDescriptionMap());
 
-            ddmTemplateLocalService.updateTemplate(
-                    userId,
-                    ddmTemplate.getTemplateId(),
-                    ddmTemplate.getClassPK(),
-                    titleMap,
-                    descriptionMap,
-                    DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
-                    StringPool.BLANK,
-                    language,
-                    script,
-                    ddmTemplate.getCacheable(),
-                    serviceContext
-            );
+            if (smallImage) {
+                ddmTemplateLocalService.updateTemplate(
+                        userId,
+                        ddmTemplate.getTemplateId(),
+                        ddmTemplate.getClassPK(),
+                        titleMap,
+                        descriptionMap,
+                        DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
+                        StringPool.BLANK,
+                        language,
+                        script,
+                        ddmTemplate.getCacheable(),
+                        smallImage,
+                        StringPool.BLANK,
+                        smallImageFile,
+                        serviceContext
+                );
+            } else {
+                ddmTemplateLocalService.updateTemplate(
+                        userId,
+                        ddmTemplate.getTemplateId(),
+                        ddmTemplate.getClassPK(),
+                        titleMap,
+                        descriptionMap,
+                        DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
+                        StringPool.BLANK,
+                        language,
+                        script,
+                        ddmTemplate.getCacheable(),
+                        serviceContext
+                );
+            }
         }
     }
 

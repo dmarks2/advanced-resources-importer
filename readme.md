@@ -54,7 +54,7 @@ The following changes were made compared to the "old" Resources Importer:
 
 * You can rename the structures in Liferay. The names are kept as they are and are not changed when importing the resources again (if not overwritten by an entry in `assets.json`, see below)
 * Web Content Templates are created as not cacheable.
-* You can define a custom title and a custom description in the `assets.json` file. If a custom title or a custom description is given this will overwrite the title or description in the portal. This is done like this:
+* You can define a custom title, a custom description and a small image in the `assets.json` file. If a custom title or a custom description is given this will overwrite the title or description in the portal. This is done like this:
 
 ```json
 {
@@ -67,7 +67,8 @@ The following changes were made compared to the "old" Resources Importer:
       },
       "description": {
         "en_US": "here comes a description"
-      }
+      },
+     "smallImage": "hello.png"
    }
   ]
 }
@@ -80,7 +81,7 @@ Application Display Templates have to be present in the same directory structure
 The following changes were made compared to the "old" Resources Importer:
 
 * You can rename the ADTs in Liferay. The names are kept as they are and are not changed when importing the resources again (if not overwritten by an entry in `assets.json`, see below)
-* You can define a custom title and a custom description in the `assets.json` file. If a custom title or a custom description is given this will overwrite the title or description in the portal. This is done like this:
+* You can define a custom title, a custom description and a small image in the `assets.json` file. If a custom title or a custom description is given this will overwrite the title or description in the portal. This is done like this:
 
 ```json
 {
@@ -93,7 +94,8 @@ The following changes were made compared to the "old" Resources Importer:
       },
      "description": {
         "en_US": "here comes a description"
-      }
+      },
+     "smallImage": "hello.png"
     }
   ]
 }
