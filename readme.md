@@ -166,7 +166,14 @@ A sample file may look like this:
       ],
       "categories": [
         {
-          "name": "Exhibition"
+          "name": "Exhibition",
+          "title": {
+            "en_US": "Exhibition",
+            "de_DE": "Ausstellung"
+          },
+          "description": {
+            "en_US": "here comes a description"
+          }
         },
         {
           "name": "Fair",

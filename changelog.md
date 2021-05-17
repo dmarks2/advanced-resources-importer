@@ -6,6 +6,7 @@ List of changes
 Version 1.0.8
 -------------
 * Feature: Support small image for web content templates and application display templates
+* Feature: Add localized titles and descriptions for categories
 
 Version 1.0.7
 -------------

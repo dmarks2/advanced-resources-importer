@@ -166,8 +166,17 @@ public class VocabulariesImporter extends BaseImporter {
 
         AssetCategory assetCategory = getCategoryByName(vocabularyId, parentCategoryId, name);
 
-        Map<Locale, String> titleMap = new HashMap<>();
-        titleMap.put(LocaleUtil.getSiteDefault(), name);
+        Map<Locale, String> titleMap = getLocaleStringMap("title", categoryJSONObject);
+
+        if (titleMap == null) {
+            titleMap = new HashMap<>();
+        }
+
+        if (! titleMap.containsKey(LocaleUtil.getSiteDefault())) {
+            titleMap.put(LocaleUtil.getSiteDefault(), name);
+        }
+
+        Map<Locale, String> descriptionMap = getLocaleStringMap("description", categoryJSONObject);
 
         String[] categoryProperties = new String[0];
         JSONArray propertiesJSONArray = categoryJSONObject.getJSONArray("properties");
@@ -192,7 +201,7 @@ public class VocabulariesImporter extends BaseImporter {
                 groupId,
                 parentCategoryId,
                 titleMap,
-                null,
+                descriptionMap,
                 vocabularyId,
                 categoryProperties,
                 serviceContext
@@ -207,7 +216,7 @@ public class VocabulariesImporter extends BaseImporter {
                     assetCategory.getCategoryId(),
                     parentCategoryId,
                     titleMap,
-                    null,
+                    descriptionMap,
                     vocabularyId,
                     categoryProperties,
                     serviceContext
