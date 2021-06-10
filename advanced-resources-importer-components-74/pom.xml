@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>advanced-resources-importer</artifactId>
+        <groupId>de.dm.toolbox.liferay</groupId>
+        <version>1.0.9-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>advanced-resources-importer-components-74</artifactId>
+
+    <packaging>bundle</packaging>
+
+    <name>Advanced Resources Importer Components for Liferay 7.4</name>
+    <description>
+        Components for Liferay 7.4
+    </description>
+
+    <properties>
+        <liferay.workspace.target.platform.version>7.4.0</liferay.workspace.target.platform.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.liferay.portal</groupId>
+                <artifactId>release.portal.bom</artifactId>
+                <version>${liferay.workspace.target.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.liferay.portal</groupId>
+                <artifactId>release.portal.bom.compile.only</artifactId>
+                <version>${liferay.workspace.target.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.liferay.portal</groupId>
+            <artifactId>com.liferay.portal.kernel</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.liferay</groupId>
+            <artifactId>com.liferay.dynamic.data.mapping.api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>advanced-resources-importer-service-7-x</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
