@@ -3,6 +3,10 @@ Advanced Resources Importer
 
 List of changes
 
+Version 1.0.9
+-------------
+* Added support for Liferay 7.4.0 GA 1
+
 Version 1.0.8
 -------------
 * Feature: Support small image for web content templates and application display templates

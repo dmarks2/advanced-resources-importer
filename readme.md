@@ -14,6 +14,7 @@ Depending on your Liferay version you need to deploy one additional module:
 * Liferay 7.1.x: `advanced-resources-importer-components-71.jar`
 * Liferay 7.2.x: `advanced-resources-importer-components-72.jar`
 * Liferay 7.3.x: `advanced-resources-importer-components-73.jar`
+* Liferay 7.4.x: `advanced-resources-importer-components-74.jar`
 
 To import resources you have to create a new module. This can be a JAR module and does not need to be a WAR module as in the "old" resources importer.
 
@@ -297,6 +298,7 @@ This plugn has been tested against the following Liferay versions:
 * Liferay CE 7.3.2 GA3
 * Liferay CE 7.3.3 GA4
 * Liferay CE 7.3.5 GA6
+* Liferay CE 7.4.0 GA1
 
 Developer notes
 ---------------
