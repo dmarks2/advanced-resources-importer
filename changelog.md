@@ -3,6 +3,11 @@ Advanced Resources Importer
 
 List of changes
 
+Version 1.0.10
+--------------
+* Added support for Liferay 7.4.1 GA 2
+* Feature: Service available to start importing from code
+
 Version 1.0.9
 -------------
 * Added support for Liferay 7.4.0 GA 1

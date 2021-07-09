@@ -1,2 +1,6 @@
 Provide-Capability: \
     de.dm.toolbox.liferay.advanced.resources.importer.component;
+
+Import-Package: \
+    com.liferay.portal.kernel.repository.model;version="[8.1,10)",\
+    *

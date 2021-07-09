@@ -299,6 +299,7 @@ This plugn has been tested against the following Liferay versions:
 * Liferay CE 7.3.3 GA4
 * Liferay CE 7.3.5 GA6
 * Liferay CE 7.4.0 GA1
+* Liferay CE 7.4.1 GA2
 
 Developer notes
 ---------------
@@ -309,3 +310,5 @@ Every step of the Advanced Resources Importer is done with a component of the ty
 To add a new step just create a new component of this type. The order of the steps is done with the property `importer.order`.
 
 Support for new Application Display Templates can be done with a component of type `ADT.class`.
+
+Running the Advanced Resources Importer can be manually triggered by calling `AdvancedResourcesImporterService.importResources()`

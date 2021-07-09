@@ -1,20 +1,15 @@
 package de.dm.toolbox.liferay.resources.importer.internal.messaging;
 
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
-import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import de.dm.toolbox.liferay.resources.importer.components.DDMFormDeserializer;
-import de.dm.toolbox.liferay.resources.importer.internal.util.ImporterFactory;
-import de.dm.toolbox.liferay.resources.importer.Importer;
-import de.dm.toolbox.liferay.resources.importer.internal.util.AssetsUtil;
+import de.dm.toolbox.liferay.resources.importer.service.AdvancedResourcesImporterService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -25,7 +20,6 @@ import org.osgi.service.component.annotations.Reference;
 import javax.servlet.ServletContext;
 import java.util.Dictionary;
 import java.util.List;
-import java.util.Map;
 
 @Component(
         immediate = true,
@@ -41,13 +35,10 @@ public class AdvancedResourcesImporterHotDeployMessageListener {
     private ServiceTrackerMap<String, ServletContext> servletContexts;
 
     @Reference
-    private ImporterFactory importerFactory;
-
-    @Reference
     private CompanyLocalService companyLocalService;
 
     @Reference
-    private AssetsUtil assetsUtil;
+    private AdvancedResourcesImporterService advancedResourcesImporterService;
 
     @Activate
     protected void activate(final BundleContext bundleContext) {
@@ -111,7 +102,7 @@ public class AdvancedResourcesImporterHotDeployMessageListener {
                         ExportImportThreadLocal.setPortletImportInProcess(true);
 
                         for (Company company : companies) {
-                            importResources(company, servletContext, groupKey);
+                            advancedResourcesImporterService.importResources(company, servletContext, groupKey);
                         }
                     }
                     finally {
@@ -120,29 +111,6 @@ public class AdvancedResourcesImporterHotDeployMessageListener {
                     }
                 }
             }
-        }
-    }
-
-    private void importResources(Company company, ServletContext servletContext, String groupKey) {
-        long companyId = CompanyThreadLocal.getCompanyId();
-
-        try {
-            CompanyThreadLocal.setCompanyId(company.getCompanyId());
-
-            ServiceTrackerList<Importer, Importer> importers = importerFactory.getImporters();
-
-            Map<String, JSONObject> assetJSONObjectMap = assetsUtil.getAssetJSONObjectMap(servletContext, company.getCompanyId(), groupKey);
-
-            for (Importer importer : importers) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Running importer " + importer.getClass().getName());
-                }
-                importer.runImport(servletContext, company.getCompanyId(), groupKey, assetJSONObjectMap);
-            }
-        } catch (Exception e) {
-            log.error("Error importing resources from " + servletContext.getServletContextName() + " into " + groupKey, e);
-        } finally {
-            CompanyThreadLocal.setCompanyId(companyId);
         }
     }
 

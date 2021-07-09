@@ -1,11 +1,12 @@
 Export-Package: \
     de.dm.toolbox.liferay.resources.importer,\
-    de.dm.toolbox.liferay.resources.importer.components
+    de.dm.toolbox.liferay.resources.importer.components,\
+    de.dm.toolbox.liferay.resources.importer.service
 
 Import-Package: \
     com.liferay.journal.configuration;version="[1.0,5)",\
-    com.liferay.journal.model;version="[1.0,5)",\
-    com.liferay.journal.service;version="[1.0,5)",\
+    com.liferay.journal.model;version="[1.0,6)",\
+    com.liferay.journal.service;version="[1.0,6)",\
     com.liferay.journal.util;version="[1.0,4)",\
     com.liferay.osgi.service.tracker.collections.list;version="[1.0,3)",\
     com.liferay.osgi.service.tracker.collections.map;version="[1.0,3)",\
@@ -13,7 +14,7 @@ Import-Package: \
     com.liferay.portal.kernel.json; version="[7.0,9)",\
     com.liferay.portal.kernel.model;version="[1.0,7)",\
     com.liferay.portal.kernel.portlet;version="[7.10.0,12)",\
-    com.liferay.portal.kernel.repository.model;version="[7.2.0,9)",\
+    com.liferay.portal.kernel.repository.model;version="[7.2.0,10)",\
     com.liferay.portal.kernel.service; version="[1.18,6)",\
     com.liferay.portal.kernel.util;version="[7.23.0,12)",\
     com.liferay.portal.kernel.security.auth; version="[1.1,3)",\
