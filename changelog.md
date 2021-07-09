@@ -3,6 +3,10 @@ Advanced Resources Importer
 
 List of changes
 
+Version 1.0.11
+--------------
+* Bugfix: Updating Journal Structures did not work properly in Liferay 7.4.x
+
 Version 1.0.10
 --------------
 * Added support for Liferay 7.4.1 GA 2

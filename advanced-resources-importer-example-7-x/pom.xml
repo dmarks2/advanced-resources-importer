@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.dm.toolbox.liferay</groupId>
         <artifactId>advanced-resources-importer</artifactId>
-        <version>1.0.11-SNAPSHOT</version>
+        <version>1.0.11</version>
     </parent>
 
     <artifactId>advanced-resources-importer-example-7-x</artifactId>
