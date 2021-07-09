@@ -5,8 +5,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 
 public interface DDMFormDeserializer {
 
-    DDMForm deserializeJSONDDMForm(String content) throws PortalException;
+    DDMForm deserializeJSONDDMForm(String content, long groupId, String parentDDMStructureKey) throws PortalException;
 
-    DDMForm deserializeXSD(String content) throws PortalException;
+    DDMForm deserializeXSD(String content, long groupId, String parentDDMStructureKey) throws PortalException;
 
 }

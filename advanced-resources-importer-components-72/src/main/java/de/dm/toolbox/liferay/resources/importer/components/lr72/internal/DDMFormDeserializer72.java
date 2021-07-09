@@ -21,12 +21,12 @@ public class DDMFormDeserializer72 implements DDMFormDeserializer {
     private DDMFormXSDDeserializer ddmFormXSDDeserializer;
 
     @Override
-    public DDMForm deserializeJSONDDMForm(String content) throws PortalException {
+    public DDMForm deserializeJSONDDMForm(String content, long groupId, String parentDDMStructureKey) throws PortalException {
         return ddmFormJSONDeserializer.deserialize(content);
     }
 
     @Override
-    public DDMForm deserializeXSD(String content) throws PortalException {
+    public DDMForm deserializeXSD(String content, long groupId, String parentDDMStructureKey) throws PortalException {
         return ddmFormXSDDeserializer.deserialize(content);
     }
 }

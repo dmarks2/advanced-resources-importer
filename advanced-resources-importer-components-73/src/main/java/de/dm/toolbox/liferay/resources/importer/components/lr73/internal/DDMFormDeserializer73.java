@@ -18,7 +18,7 @@ public class DDMFormDeserializer73 implements DDMFormDeserializer {
     private com.liferay.dynamic.data.mapping.io.DDMFormDeserializer ddmFormDeserializer;
 
     @Override
-    public DDMForm deserializeJSONDDMForm(String content) throws PortalException {
+    public DDMForm deserializeJSONDDMForm(String content, long groupId, String parentDDMStructureKey) throws PortalException {
         DDMFormDeserializerDeserializeRequest.Builder builder =
                 DDMFormDeserializerDeserializeRequest.Builder.newBuilder(content);
 
@@ -30,7 +30,7 @@ public class DDMFormDeserializer73 implements DDMFormDeserializer {
     }
 
     @Override
-    public DDMForm deserializeXSD(String content) throws PortalException {
+    public DDMForm deserializeXSD(String content, long groupId, String parentDDMStructureKey) throws PortalException {
         DDMFormDeserializerDeserializeRequest.Builder builder =
                 DDMFormDeserializerDeserializeRequest.Builder.newBuilder(content);
 

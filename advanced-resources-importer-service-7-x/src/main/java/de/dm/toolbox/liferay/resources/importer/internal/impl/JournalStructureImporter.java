@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.xml.SAXReader;
 import de.dm.toolbox.liferay.resources.importer.BaseImporter;
 import de.dm.toolbox.liferay.resources.importer.Importer;
 import de.dm.toolbox.liferay.resources.importer.components.DDMFormDeserializer;
+import de.dm.toolbox.liferay.resources.importer.components.DDMFormLayoutUtil;
 import de.dm.toolbox.liferay.resources.importer.internal.util.ImporterUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -69,6 +70,9 @@ public class JournalStructureImporter extends BaseImporter {
 
     @Reference
     private DDMFormDeserializer ddmFormDeserializer;
+
+    @Reference
+    private DDMFormLayoutUtil ddmFormLayoutUtil;
 
     @Reference
     private DDM ddm;
@@ -139,12 +143,12 @@ public class JournalStructureImporter extends BaseImporter {
 
             ddmxml.validateXML(content);
 
-            ddmForm = ddmFormDeserializer.deserializeXSD(content);
+            ddmForm = ddmFormDeserializer.deserializeXSD(content, groupId, parentDDMStructureKey);
         } else {
-            ddmForm = ddmFormDeserializer.deserializeJSONDDMForm(content);
+            ddmForm = ddmFormDeserializer.deserializeJSONDDMForm(content, groupId, parentDDMStructureKey);
         }
 
-        DDMFormLayout ddmFormLayout = ddm.getDefaultDDMFormLayout(ddmForm);
+        DDMFormLayout ddmFormLayout = ddmFormLayoutUtil.getDefaultDDMFormLayout(ddmForm);
 
         if (Validator.isNull(ddmStructure)) {
             Map<Locale, String> titleMap = getLocalizedMapFromAssetJSONObjectMap(fileName, "title", getMap(name));
