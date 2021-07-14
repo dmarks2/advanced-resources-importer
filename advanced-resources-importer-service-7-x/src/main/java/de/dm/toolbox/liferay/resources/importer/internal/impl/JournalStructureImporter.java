@@ -12,7 +12,6 @@ import com.liferay.dynamic.data.mapping.util.DDMXML;
 import com.liferay.journal.configuration.JournalServiceConfigurationValues;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.util.JournalConverter;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -31,7 +30,7 @@ import de.dm.toolbox.liferay.resources.importer.BaseImporter;
 import de.dm.toolbox.liferay.resources.importer.Importer;
 import de.dm.toolbox.liferay.resources.importer.components.DDMFormDeserializer;
 import de.dm.toolbox.liferay.resources.importer.components.DDMFormLayoutUtil;
-import de.dm.toolbox.liferay.resources.importer.internal.util.ImporterUtil;
+import de.dm.toolbox.liferay.resources.importer.util.ImporterUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 

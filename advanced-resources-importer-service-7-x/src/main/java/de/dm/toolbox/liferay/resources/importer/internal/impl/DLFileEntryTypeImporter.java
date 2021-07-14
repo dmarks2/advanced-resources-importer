@@ -7,7 +7,6 @@ import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.util.DDM;
 import com.liferay.dynamic.data.mapping.util.DDMBeanTranslator;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -19,7 +18,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import de.dm.toolbox.liferay.resources.importer.BaseImporter;
 import de.dm.toolbox.liferay.resources.importer.Importer;
-import de.dm.toolbox.liferay.resources.importer.internal.util.ImporterUtil;
+import de.dm.toolbox.liferay.resources.importer.util.ImporterUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 

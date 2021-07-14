@@ -1,4 +1,4 @@
-package de.dm.toolbox.liferay.resources.importer.internal.util;
+package de.dm.toolbox.liferay.resources.importer.util;
 
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;

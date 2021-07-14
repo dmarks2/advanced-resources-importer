@@ -8,10 +8,9 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import de.dm.toolbox.liferay.resources.importer.Importer;
-import de.dm.toolbox.liferay.resources.importer.internal.messaging.AdvancedResourcesImporterHotDeployMessageListener;
-import de.dm.toolbox.liferay.resources.importer.internal.util.AssetsUtil;
 import de.dm.toolbox.liferay.resources.importer.internal.util.ImporterFactory;
 import de.dm.toolbox.liferay.resources.importer.service.AdvancedResourcesImporterService;
+import de.dm.toolbox.liferay.resources.importer.util.AssetsUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 

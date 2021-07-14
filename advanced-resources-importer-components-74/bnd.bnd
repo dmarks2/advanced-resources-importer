@@ -3,4 +3,5 @@ Provide-Capability: \
 
 Import-Package: \
     com.liferay.portal.kernel.repository.model;version="[8.1,10)",\
+    javax.portlet;version="[2.0,3)", \
     *

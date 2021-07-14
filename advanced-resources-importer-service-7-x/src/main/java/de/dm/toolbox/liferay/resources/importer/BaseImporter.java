@@ -34,7 +34,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import de.dm.toolbox.liferay.resources.importer.internal.util.ImporterUtil;
+import de.dm.toolbox.liferay.resources.importer.util.ImporterUtil;
 
 import javax.servlet.ServletContext;
 import java.util.HashMap;

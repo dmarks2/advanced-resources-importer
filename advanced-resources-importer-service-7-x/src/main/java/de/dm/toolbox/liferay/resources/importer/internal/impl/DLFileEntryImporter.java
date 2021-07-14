@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.util.Validator;
 import de.dm.toolbox.liferay.resources.importer.BaseImporter;
 import de.dm.toolbox.liferay.resources.importer.Importer;
 import de.dm.toolbox.liferay.resources.importer.components.DLAppHelper;
-import de.dm.toolbox.liferay.resources.importer.internal.util.ImporterUtil;
+import de.dm.toolbox.liferay.resources.importer.util.ImporterUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 

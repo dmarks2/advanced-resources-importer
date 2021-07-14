@@ -249,6 +249,31 @@ A sample file may look like this:
 
 Layouts can be imported as in the "old" resources importer using the `sitemap.json`.
 
+Experimental support has been added to create content pages (Liferay 7.4) only. Structure is as follows:
+
+```json
+{
+  "publicPages": [
+    {
+      "content": [
+        {
+          "fragmentKey": "FEATURED_CONTENT-highlights"
+        },
+        {
+          "instanceId": "MY_CONTENT",
+          "portletId": "com_liferay_journal_content_web_portlet_JournalContentPortlet",
+          "portletPreferences": {
+            "articleId": "MY_ARTICLE",
+            "groupId": "${groupId}",
+            "portletSetupPortletDecoratorId": "borderless"
+          }
+        }
+      ]
+    }
+  ] 
+}
+```
+
 ### Tags and Categories
 
 As in the "old" resources importer you can add tags to your content using thee `assets.json`.

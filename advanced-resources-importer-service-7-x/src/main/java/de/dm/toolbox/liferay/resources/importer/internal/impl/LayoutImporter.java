@@ -38,9 +38,10 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.registry.collections.ServiceTrackerCollections;
 import com.liferay.registry.collections.ServiceTrackerMap;
 import de.dm.toolbox.liferay.resources.importer.BaseImporter;
-import de.dm.toolbox.liferay.resources.importer.PortletPreferencesTranslator;
 import de.dm.toolbox.liferay.resources.importer.Importer;
-import de.dm.toolbox.liferay.resources.importer.internal.util.ImporterUtil;
+import de.dm.toolbox.liferay.resources.importer.PortletPreferencesTranslator;
+import de.dm.toolbox.liferay.resources.importer.components.LayoutHelper;
+import de.dm.toolbox.liferay.resources.importer.util.ImporterUtil;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -50,7 +51,6 @@ import javax.portlet.PortletException;
 import javax.portlet.PortletPreferences;
 import javax.servlet.ServletContext;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -92,6 +92,9 @@ public class LayoutImporter extends BaseImporter {
 
     @Reference
     private PortletPreferencesFactory portletPreferencesFactory;
+
+    @Reference
+    private LayoutHelper layoutHelper;
 
     @Reference(
             target = "(portlet.preferences.translator.portlet.id=default)"
@@ -254,21 +257,16 @@ public class LayoutImporter extends BaseImporter {
 
                 resetLayoutColumns(layout);
 
-                layout = layoutLocalService.updateLayout(
+                layoutHelper.updateLayout(
                         groupId,
                         privateLayout,
-                        layout.getLayoutId(),
+                        layout,
                         parentLayoutId,
                         nameMap,
                         titleMap,
-                        layout.getDescriptionMap(),
-                        layout.getKeywordsMap(),
-                        layout.getRobotsMap(),
                         type,
                         hidden,
                         friendlyURLMap,
-                        layout.getIconImage(),
-                        null,
                         serviceContext
                 );
             }

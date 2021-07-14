@@ -1,7 +1,8 @@
 Export-Package: \
     de.dm.toolbox.liferay.resources.importer,\
     de.dm.toolbox.liferay.resources.importer.components,\
-    de.dm.toolbox.liferay.resources.importer.service
+    de.dm.toolbox.liferay.resources.importer.service,\
+    de.dm.toolbox.liferay.resources.importer.util
 
 Import-Package: \
     com.liferay.journal.configuration;version="[1.0,5)",\
