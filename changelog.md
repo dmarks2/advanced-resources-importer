@@ -3,6 +3,10 @@ Advanced Resources Importer
 
 List of changes
 
+Version 1.0.13
+--------------
+* Feature: Improved Content Pages support (layout structure elements, nested fragments etc.)
+
 Version 1.0.12
 --------------
 * Feature: Experimental support for Content Pages in sitemap.json (Liferay 7.4 only)

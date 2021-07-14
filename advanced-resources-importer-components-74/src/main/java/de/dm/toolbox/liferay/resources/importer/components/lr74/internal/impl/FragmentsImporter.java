@@ -3,15 +3,20 @@ package de.dm.toolbox.liferay.resources.importer.components.lr74.internal.impl;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorTracker;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
+import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.util.LayoutCopyHelper;
+import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
+import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringPool;
@@ -32,6 +37,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
@@ -57,6 +63,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 @Component(
 	immediate = true, property = {"importer.order=90"}, service = Importer.class
@@ -120,76 +127,134 @@ public class FragmentsImporter extends BaseImporter {
 		super.setUserLocalService(userLocalService);
 	}
 
-	private void addFragmentContent(
-			Layout layout, int position, JSONObject contentJSONObject)
-			throws PortalException, PortletException, IOException {
-
+	private void addFragmentContent(Layout layout, int position, JSONObject contentJSONObject) throws PortalException, PortletException, IOException {
 		Layout draftLayout = layout;
 
 		if (layout.fetchDraftLayout() != null) {
 			draftLayout = layout.fetchDraftLayout();
 		}
 
+		LayoutPageTemplateStructure layoutPageTemplateStructure = layoutPageTemplateStructureLocalService.fetchLayoutPageTemplateStructure(groupId, draftLayout.getPlid(), true);
+
+		String templateStructureData = layoutPageTemplateStructure.getData(0L);
+
+		LayoutStructure layoutStructure = LayoutStructure.of(templateStructureData);
+
+		addFragmentContent(draftLayout, position, contentJSONObject, layoutStructure.getMainItemId(), layoutStructure);
+
+		layoutPageTemplateStructureLocalService.updateLayoutPageTemplateStructureData(
+				groupId,
+				draftLayout.getPlid(),
+				0L,
+				layoutStructure.toString()
+		);
+	}
+
+	private void addFragmentContent(Layout draftLayout, int position, JSONObject contentJSONObject, String parentItemId, LayoutStructure layoutStructure) throws PortalException, PortletException, IOException {
 		String fragmentKey = contentJSONObject.getString("fragmentKey");
 		String portletId = contentJSONObject.getString("portletId");
-		String instanceId = contentJSONObject.getString("instanceId");
+		String itemType = contentJSONObject.getString("itemType");
+
+		if (Validator.isNotNull(fragmentKey)) {
+			addFragmentEntry(draftLayout, position, contentJSONObject, parentItemId, layoutStructure);
+		} else if (Validator.isNotNull(portletId)) {
+			addPortletEntry(draftLayout, position, contentJSONObject, parentItemId, layoutStructure);
+		} else if (Validator.isNotNull(itemType)) {
+			addLayoutItemEntry(draftLayout, position, contentJSONObject, parentItemId, layoutStructure);
+		}
+	}
+
+	private void addLayoutItemEntry(Layout draftLayout, int position, JSONObject contentJSONObject, String parentItemId, LayoutStructure layoutStructure) throws PortletException, PortalException, IOException {
+		String itemType = contentJSONObject.getString("itemType");
+
+		if (log.isInfoEnabled()) {
+			log.info("Adding Layout Item of type " + itemType + " to Layout " + draftLayout.getName(LocaleUtil.getDefault()) + " at position " + position);
+		}
+
+		LayoutStructureItem layoutStructureItem;
+
+		if (LayoutDataItemTypeConstants.TYPE_COLLECTION.equals(itemType)) {
+			layoutStructureItem = layoutStructure.addCollectionStyledLayoutStructureItem(parentItemId, position);
+		} else if (LayoutDataItemTypeConstants.TYPE_ROW.equals(itemType)) {
+			JSONArray columnsJSONArray = contentJSONObject.getJSONArray("columns");
+
+			int columnCount = 3;
+
+			if (columnsJSONArray != null) {
+				columnCount = columnsJSONArray.length();
+			}
+			layoutStructureItem = layoutStructure.addRowStyledLayoutStructureItem(parentItemId, position, columnCount);
+
+			if (columnsJSONArray != null) {
+				for (int i = 0; i < columnsJSONArray.length(); i++) {
+					JSONObject columnJSONObject = columnsJSONArray.getJSONObject(i);
+
+					ColumnLayoutStructureItem columnLayoutStructureItem = (ColumnLayoutStructureItem)layoutStructure.addColumnLayoutStructureItem(layoutStructureItem.getItemId(), i);
+
+					columnLayoutStructureItem.setSize(4);
+
+					addFragmentContent(draftLayout, position, columnJSONObject, columnLayoutStructureItem.getItemId(), layoutStructure);
+				}
+			}
+		} else {
+			layoutStructureItem = layoutStructure.addLayoutStructureItem(itemType, parentItemId, position);
+		}
+
+		JSONArray childContentsJSONArray = contentJSONObject.getJSONArray("content");
+
+		if (childContentsJSONArray != null) {
+			for (int i = 0; i < childContentsJSONArray.length(); i++) {
+				JSONObject childContentJSONObject = childContentsJSONArray.getJSONObject(i);
+
+				addFragmentContent(draftLayout, position, childContentJSONObject, layoutStructureItem.getItemId(), layoutStructure);
+			}
+		}
+	}
+
+	private void addFragmentEntry(Layout draftLayout, int position, JSONObject contentJSONObject, String parentItemId, LayoutStructure layoutStructure) throws PortalException {
+		String fragmentKey = contentJSONObject.getString("fragmentKey");
 		String configuration = contentJSONObject.getString("configuration");
 		String css = contentJSONObject.getString("css");
 		String html = contentJSONObject.getString("html");
 		String js = contentJSONObject.getString("js");
+		JSONObject editableValuesJSONObject = contentJSONObject.getJSONObject("editableValues");
 
-		LayoutPageTemplateStructure layoutPageTemplateStructure = layoutPageTemplateStructureLocalService.fetchLayoutPageTemplateStructure(groupId, draftLayout.getPlid(), true);
+		FragmentEntry fragmentEntry = getFragmentEntry(groupId, fragmentKey, PortalUtil.getSiteDefaultLocale(groupId));
 
-		long fragmentEntryId = 0L;
+		if (Validator.isNull(fragmentEntry)) {
+			log.warn("Fragment " + fragmentKey + " not found!");
+
+			return;
+		}
+
+		if (Validator.isNull(css)) {
+			css = fragmentEntry.getCss();
+		}
+		if (Validator.isNull(html)) {
+			html = fragmentEntry.getHtml();
+		}
+		if (Validator.isNull(js)) {
+			js = fragmentEntry.getJs();
+		}
+		if (Validator.isNull(configuration)) {
+			configuration = fragmentEntry.getConfiguration();
+		}
+
+		if (log.isInfoEnabled()) {
+			log.info("Adding Fragment " + fragmentKey + " to Layout " + draftLayout.getName(LocaleUtil.getDefault()) + " at position " + position);
+		}
 
 		String editableValues = null;
 
-		if (Validator.isNotNull(fragmentKey)) {
-			FragmentEntry fragmentEntry = getFragmentEntry(groupId, fragmentKey, PortalUtil.getSiteDefaultLocale(groupId));
-
-			if (Validator.isNull(fragmentEntry)) {
-				log.warn("Fragment " + fragmentKey + " not found!");
-
-				return;
-			}
-
-			if (Validator.isNull(css)) {
-				css = fragmentEntry.getCss();
-			}
-			if (Validator.isNull(html)) {
-				html = fragmentEntry.getHtml();
-			}
-			if (Validator.isNull(js)) {
-				js = fragmentEntry.getJs();
-			}
-			if (Validator.isNull(configuration)) {
-				configuration = fragmentEntry.getConfiguration();
-			}
-		} else if (Validator.isNotNull(portletId)) {
-			JSONObject editableValueJSONObject = fragmentEntryProcessorRegistry.getDefaultEditableValuesJSONObject(StringPool.BLANK, StringPool.BLANK);
-
-			editableValueJSONObject.put(
-					"instanceId", instanceId
-			).put(
-					"portletId", portletId
-			);
-
-			css = StringPool.BLANK;
-			html = StringPool.BLANK;
-			js = StringPool.BLANK;
-			configuration = StringPool.BLANK;
-			editableValues = editableValueJSONObject.toString();
-		} else {
-			log.warn("No Fragment or Portlet ID given. Skipping entry...");
-
-			return;
+		if (editableValuesJSONObject != null) {
+			editableValues = editableValuesJSONObject.toString();
 		}
 
 		FragmentEntryLink fragmentEntryLink = fragmentEntryLinkLocalService.addFragmentEntryLink(
 				userId,
 				groupId,
 				0L,
-				fragmentEntryId,
+				fragmentEntry.getFragmentEntryId(),
 				0L,
 				draftLayout.getPlid(),
 				css,
@@ -203,24 +268,46 @@ public class FragmentsImporter extends BaseImporter {
 				serviceContext
 		);
 
-		String templateStructureData = layoutPageTemplateStructure.getData(0L);
+		layoutStructure.addFragmentStyledLayoutStructureItem(fragmentEntryLink.getFragmentEntryLinkId(), parentItemId, position);
+	}
 
-		LayoutStructure layoutStructure = LayoutStructure.of(templateStructureData);
+	private void addPortletEntry(Layout draftLayout, int position, JSONObject contentJSONObject, String parentItemId, LayoutStructure layoutStructure) throws PortletException, IOException, PortalException {
+		String portletId = contentJSONObject.getString("portletId");
+		String instanceId = contentJSONObject.getString("instanceId");
 
-		LayoutStructureItem layoutStructureItem = layoutStructure.addFragmentStyledLayoutStructureItem(
-				fragmentEntryLink.getFragmentEntryLinkId(), layoutStructure.getMainItemId(), position
+		JSONObject editableValueJSONObject = fragmentEntryProcessorRegistry.getDefaultEditableValuesJSONObject(StringPool.BLANK, StringPool.BLANK);
+
+		editableValueJSONObject.put(
+				"instanceId", instanceId
+		).put(
+				"portletId", portletId
 		);
 
-		layoutPageTemplateStructureLocalService.updateLayoutPageTemplateStructureData(
-				groupId,
-				draftLayout.getPlid(),
-				0L,
-				layoutStructure.toString()
-		);
-
-		if (Validator.isNotNull(portletId)) {
-			configurePortlet(draftLayout, contentJSONObject);
+		if (log.isInfoEnabled()) {
+			log.info("Adding Portlet " + portletId + " to Layout " + draftLayout.getName(LocaleUtil.getDefault()) + " at position " + position);
 		}
+
+		FragmentEntryLink fragmentEntryLink = fragmentEntryLinkLocalService.addFragmentEntryLink(
+				userId,
+				groupId,
+				0L,
+				0L,
+				0L,
+				draftLayout.getPlid(),
+				StringPool.BLANK,
+				StringPool.BLANK,
+				StringPool.BLANK,
+				StringPool.BLANK,
+				editableValueJSONObject.toString(),
+				StringPool.BLANK,
+				position,
+				null,
+				serviceContext
+		);
+
+		layoutStructure.addFragmentStyledLayoutStructureItem(fragmentEntryLink.getFragmentEntryLinkId(), parentItemId, position);
+
+		configurePortlet(draftLayout, contentJSONObject);
 	}
 
 	private void configurePortlet(Layout layout, JSONObject contentJSONObject) throws PortletException, IOException {
