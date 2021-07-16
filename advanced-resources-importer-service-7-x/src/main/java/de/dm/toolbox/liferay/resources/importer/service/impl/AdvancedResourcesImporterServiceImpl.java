@@ -7,12 +7,15 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import de.dm.toolbox.liferay.resources.importer.FragmentsImporter;
 import de.dm.toolbox.liferay.resources.importer.Importer;
+import de.dm.toolbox.liferay.resources.importer.internal.impl.JournalStructureImporter;
 import de.dm.toolbox.liferay.resources.importer.internal.util.ImporterFactory;
 import de.dm.toolbox.liferay.resources.importer.service.AdvancedResourcesImporterService;
 import de.dm.toolbox.liferay.resources.importer.util.AssetsUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import javax.servlet.ServletContext;
 import java.util.Map;
@@ -33,6 +36,37 @@ public class AdvancedResourcesImporterServiceImpl implements AdvancedResourcesIm
 
     @Reference
     private AssetsUtil assetsUtil;
+
+    @Reference(
+            target = "(component.name=de.dm.toolbox.liferay.resources.importer.internal.impl.JournalStructureImporter)",
+            unbind = "-"
+    )
+    private void setJournalStructureImporter(Importer importer) {
+        //do nothing, just ensure a reference is present (otherwise specific importers like JournalStructureImporter do not run)
+    }
+
+    @Reference(
+            target = "(component.name=de.dm.toolbox.liferay.resources.importer.internal.impl.DLFileEntryImporter)",
+            unbind = "-"
+    )
+    private void setDLFileEntryImporter(Importer importer) {
+        //do nothing, just ensure a reference is present (otherwise specific importers like JournalStructureImporter do not run)
+    }
+
+    @Reference(
+            target = "(component.name=de.dm.toolbox.liferay.resources.importer.internal.impl.LayoutImporter)",
+            unbind = "-"
+    )
+    private void setLayoutImporter(Importer importer) {
+        //do nothing, just ensure a reference is present (otherwise specific importers like JournalStructureImporter do not run)
+    }
+
+    @Reference(
+            unbind = "-"
+    )
+    private void setFragmentsImporter(FragmentsImporter fragmentsImporter) {
+        //do nothing, just ensure a reference is present (otherwise specific importers like JournalStructureImporter do not run)
+    }
 
     public void importResources(Company company, ServletContext servletContext, String groupKey) {
         long companyId = CompanyThreadLocal.getCompanyId();

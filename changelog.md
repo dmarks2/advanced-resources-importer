@@ -3,6 +3,10 @@ Advanced Resources Importer
 
 List of changes
 
+Version 1.0.14
+--------------
+* Bugfix: Enforced proper startup of all importers to avoid incomplete imports.
+
 Version 1.0.13
 --------------
 * Feature: Improved Content Pages support (layout structure elements, nested fragments etc.)
