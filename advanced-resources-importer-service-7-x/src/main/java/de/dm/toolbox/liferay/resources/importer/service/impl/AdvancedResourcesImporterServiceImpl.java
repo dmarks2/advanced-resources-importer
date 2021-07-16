@@ -7,15 +7,14 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.util.LoggingTimer;
 import de.dm.toolbox.liferay.resources.importer.FragmentsImporter;
 import de.dm.toolbox.liferay.resources.importer.Importer;
-import de.dm.toolbox.liferay.resources.importer.internal.impl.JournalStructureImporter;
 import de.dm.toolbox.liferay.resources.importer.internal.util.ImporterFactory;
 import de.dm.toolbox.liferay.resources.importer.service.AdvancedResourcesImporterService;
 import de.dm.toolbox.liferay.resources.importer.util.AssetsUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import javax.servlet.ServletContext;
 import java.util.Map;
@@ -71,7 +70,7 @@ public class AdvancedResourcesImporterServiceImpl implements AdvancedResourcesIm
     public void importResources(Company company, ServletContext servletContext, String groupKey) {
         long companyId = CompanyThreadLocal.getCompanyId();
 
-        try {
+        try (LoggingTimer loggingTimer = new LoggingTimer()) {
             CompanyThreadLocal.setCompanyId(company.getCompanyId());
 
             ServiceTrackerList<Importer, Importer> importers = importerFactory.getImporters();
