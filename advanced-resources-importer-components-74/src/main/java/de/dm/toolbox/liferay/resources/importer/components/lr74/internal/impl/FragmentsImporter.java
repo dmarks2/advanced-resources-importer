@@ -444,6 +444,12 @@ public class FragmentsImporter extends BaseImporter implements de.dm.toolbox.lif
 	private void releaseLayout(Layout layout) throws Exception {
 		Layout draftLayout = layout.fetchDraftLayout();
 
+		if (draftLayout == null) {
+			//layout is not in draft mode, so no release required...
+
+			return;
+		}
+
 		layout = layoutCopyHelper.copyLayout(draftLayout, layout);
 
 		layout.setType(draftLayout.getType());
