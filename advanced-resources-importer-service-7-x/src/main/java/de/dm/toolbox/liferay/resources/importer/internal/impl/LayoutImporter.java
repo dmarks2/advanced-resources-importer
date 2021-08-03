@@ -67,7 +67,7 @@ import java.util.Set;
 )
 public class LayoutImporter extends BaseImporter {
 
-    private static final Log log = LogFactoryUtil.getLog(JournalTemplateImporter.class);
+    private static final Log log = LogFactoryUtil.getLog(LayoutImporter.class);
 
     private static final String SITEMAP_JSON = "sitemap.json";
 
