@@ -17,7 +17,7 @@
     </description>
 
     <properties>
-        <liferay.workspace.target.platform.version>7.1.3</liferay.workspace.target.platform.version>
+        <liferay.workspace.target.platform.version>7.4.3.37</liferay.workspace.target.platform.version>
     </properties>
 
     <dependencyManagement>
